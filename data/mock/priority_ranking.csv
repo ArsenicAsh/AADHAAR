@@ -1,0 +1,8 @@
+rank,region_id,region_name,priority_score,risk_level,trend,impact_score
+1,R01,Maharashtra,92.5,High,Increasing,9
+2,R03,Karnataka,88.0,High,Stable,8
+3,R02,Gujarat,74.3,Medium,Increasing,7
+4,R04,Tamil Nadu,68.9,Medium,Stable,6
+5,R05,Rajasthan,61.2,Medium,Decreasing,5
+6,R06,Uttar Pradesh,55.4,Low,Stable,4
+7,R07,West Bengal,49.8,Low,Decreasing,3

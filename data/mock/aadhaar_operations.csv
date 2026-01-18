@@ -1,0 +1,7 @@
+date,region_id,region_name,enrollments,updates,success_count,error_count
+2025-01-01,R01,Maharashtra,12000,8200,7800,400
+2025-01-01,R02,Gujarat,9000,6100,5900,200
+2025-01-01,R03,Karnataka,10000,7300,7000,300
+2025-01-02,R01,Maharashtra,12500,8400,8000,400
+2025-01-02,R02,Gujarat,8800,6000,5600,400
+2025-01-02,R03,Karnataka,10200,7600,7200,400

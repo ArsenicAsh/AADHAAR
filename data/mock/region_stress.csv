@@ -1,0 +1,6 @@
+region_id,region_name,stress_level,anomaly_type,affected_ops,duration_hours
+R01,Maharashtra,High,Error Spike,Updates,6
+R03,Karnataka,High,Throughput Drop,Enrollments,5
+R02,Gujarat,Medium,Processing Delay,Updates,4
+R04,Tamil Nadu,Medium,Latency Increase,Enrollments,3
+R05,Rajasthan,Medium,Error Spike,Updates,2

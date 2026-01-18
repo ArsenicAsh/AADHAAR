@@ -1,0 +1,6 @@
+event_id,region_id,region_name,anomaly_type,severity,timestamp,impact_score
+E001,R01,Maharashtra,Error Spike,High,2025-01-05 10:30,9
+E002,R03,Karnataka,Throughput Drop,High,2025-01-05 11:10,8
+E003,R02,Gujarat,Processing Delay,Medium,2025-01-05 09:45,6
+E004,R04,Tamil Nadu,Latency Increase,Medium,2025-01-05 08:20,5
+E005,R05,Rajasthan,Error Spike,Medium,2025-01-05 07:55,4
