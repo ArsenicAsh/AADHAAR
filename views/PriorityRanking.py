@@ -1,10 +1,13 @@
 import streamlit as st
+import pandas as pd
+
+DATA_PATH = "data/mock/priority_ranking.csv"
 
 def render():
-    """
-    Renders the Priority & Risk Ranking page.
-    Assumes sidebar and page header are handled by app.py
-    """
+    # -----------------------------
+    # Load Data
+    # -----------------------------
+    df = pd.read_csv(DATA_PATH)
 
     # =====================================================
     # SORT CONTROLS
@@ -14,48 +17,70 @@ def render():
         col1, col2, col3 = st.columns(3)
 
         with col1:
-            st.markdown("**Sort By**")
-            st.write("Placeholder")
+            sort_by = st.selectbox(
+                "Sort By",
+                ["Priority Score", "Impact Score"],
+                index=0
+            )
 
         with col2:
-            st.markdown("**Risk Level Filter**")
-            st.write("Placeholder")
+            risk_filter = st.multiselect(
+                "Risk Level Filter",
+                options=sorted(df["risk_level"].unique()),
+                default=list(df["risk_level"].unique())
+            )
 
         with col3:
-            st.markdown("**Time Range**")
-            st.write("Placeholder")
+            trend_filter = st.multiselect(
+                "Trend Filter",
+                options=sorted(df["trend"].unique()),
+                default=list(df["trend"].unique())
+            )
 
     st.divider()
+
+    # =====================================================
+    # APPLY FILTERS & SORT
+    # =====================================================
+    filtered_df = df[
+        (df["risk_level"].isin(risk_filter)) &
+        (df["trend"].isin(trend_filter))
+    ]
+
+    sort_column = "priority_score" if sort_by == "Priority Score" else "impact_score"
+    filtered_df = filtered_df.sort_values(sort_column, ascending=False)
 
     # =====================================================
     # PRIORITY RANKING LIST
     # =====================================================
     st.markdown("### PRIORITY_RANKING_LIST")
     with st.container(border=True):
-        for rank in range(1, 9):
+        for _, row in filtered_df.iterrows():
             col1, col2 = st.columns([1, 9])
 
             with col1:
-                st.markdown(f"**#{rank}**")
+                st.markdown(f"**#{int(row['rank'])}**")
 
             with col2:
-                row_cols = st.columns(6)
-                row_cols[0].write("Region ID")
-                row_cols[1].write("Region Name")
-                row_cols[2].write("Priority Score")
-                row_cols[3].write("Trend")
-                row_cols[4].write("Risk Level")
-                row_cols[5].write("Impact Score")
+                cols = st.columns(6)
+                cols[0].write(row["region_id"])
+                cols[1].write(row["region_name"])
+                cols[2].write(f"{row['priority_score']:.1f}")
+                cols[3].write(row["trend"])
+                cols[4].write(row["risk_level"])
+                cols[5].write(row["impact_score"])
 
-            if rank < 8:
-                st.divider()
-
-    st.divider()
+            st.divider()
 
     # =====================================================
-    # RISK DISTRIBUTION
+    # RISK DISTRIBUTION (FIXED)
     # =====================================================
     st.markdown("### RISK_DISTRIBUTION")
     with st.container(border=True):
-        st.write("Bar chart placeholder")
-        st.write("risk_level vs region_count")
+        risk_counts = (
+            df["risk_level"]
+            .value_counts()
+            .rename("Region Count")
+        )
+
+        st.bar_chart(risk_counts, use_container_width=True)

@@ -1,32 +1,37 @@
 import streamlit as st
+import pandas as pd
+
+DATA_PATH = "data/mock/"
 
 def render():
-    """
-    Renders the Operational Stress & Anomalies page.
-    Assumes sidebar and page header are handled by app.py
-    """
+    st.markdown("## OPERATIONAL STRESS & ANOMALIES")
+    st.caption("Regional stress levels and anomaly detection")
+
+    # =====================================================
+    # Load Data
+    # =====================================================
+    stress_overview = pd.read_csv(f"{DATA_PATH}stress_overview.csv")
+    region_stress = pd.read_csv(f"{DATA_PATH}region_stress.csv")
+    anomaly_events = pd.read_csv(f"{DATA_PATH}anomaly_events.csv")
+
+    st.divider()
 
     # =====================================================
     # STRESS LEVEL OVERVIEW
     # =====================================================
     st.markdown("### STRESS_LEVEL_OVERVIEW")
     with st.container(border=True):
-        col1, col2, col3 = st.columns(3)
+        cols = st.columns(3)
 
-        with col1:
-            st.markdown("**High Stress**")
-            st.caption("Regions under critical stress")
-            st.write("Count: Placeholder")
+        for idx, level in enumerate(["High", "Medium", "Low"]):
+            value = stress_overview.loc[
+                stress_overview["stress_level"] == level, "region_count"
+            ].values[0]
 
-        with col2:
-            st.markdown("**Medium Stress**")
-            st.caption("Regions under moderate stress")
-            st.write("Count: Placeholder")
-
-        with col3:
-            st.markdown("**Low Stress**")
-            st.caption("Regions operating normally")
-            st.write("Count: Placeholder")
+            with cols[idx]:
+                st.markdown(f"**{level} Stress**")
+                st.caption(f"Regions under {level.lower()} stress")
+                st.markdown(f"### {value}")
 
     st.divider()
 
@@ -34,26 +39,14 @@ def render():
     # REGION STRESS CARDS
     # =====================================================
     st.markdown("### REGION_STRESS_CARDS")
-    with st.container(border=True):
-        for row in range(2):
-            col1, col2 = st.columns(2)
 
-            with col1:
-                st.markdown("**Region ID**")
-                st.write("Stress Level: Placeholder")
-                st.write("Anomaly Type: Placeholder")
-                st.write("Affected Operations: Placeholder")
-                st.write("Duration: Placeholder")
-
-            with col2:
-                st.markdown("**Region ID**")
-                st.write("Stress Level: Placeholder")
-                st.write("Anomaly Type: Placeholder")
-                st.write("Affected Operations: Placeholder")
-                st.write("Duration: Placeholder")
-
-            if row < 1:
-                st.divider()
+    for _, row in region_stress.iterrows():
+        with st.container(border=True):
+            st.markdown(f"**{row['region_name']} ({row['region_id']})**")
+            st.write(f"**Stress Level:** {row['stress_level']}")
+            st.write(f"**Anomaly Type:** {row['anomaly_type']}")
+            st.write(f"**Affected Operations:** {row['affected_ops']}")
+            st.write(f"**Duration:** {row['duration_hours']} hours")
 
     st.divider()
 
@@ -61,6 +54,12 @@ def render():
     # ANOMALY DETAILS TABLE
     # =====================================================
     st.markdown("### ANOMALY_DETAILS_TABLE")
-    with st.container(border=True):
-        st.write("Table placeholder")
-        st.write("Columns: Region ID | Stress Level | Anomaly Type | Timestamp | Severity")
+
+    display_df = anomaly_events.copy()
+    display_df["timestamp"] = pd.to_datetime(display_df["timestamp"])
+
+    st.dataframe(
+        display_df.sort_values("timestamp", ascending=False),
+        use_container_width=True,
+        hide_index=True,
+    )

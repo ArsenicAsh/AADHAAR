@@ -65,9 +65,6 @@ with st.sidebar:
 # -----------------------------
 page_config = PAGES[selected_page]
 
-st.markdown(f"## {page_config['title']}")
-st.caption(page_config["subtitle"])
-st.divider()
 
 # -----------------------------
 # Dynamic Page Rendering
